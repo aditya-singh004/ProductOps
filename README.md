@@ -165,8 +165,3 @@ See `docs/screenshots.md` for screenshot placeholders.
 - Docker Compose provides reproducible local infrastructure.
 - CI runs Rails tests, Maven tests, and Ant build checks.
 
-## Resume Bullets
-
-- Built ProductOps, a production-style engineering delivery platform using Ruby on Rails, PostgreSQL, HTML, CSS, jQuery, and Docker to manage requirements, WBS estimates, sprints, and releases.
-- Developed a Java Maven-based risk engine using dependency graph analysis, estimate variance, blocker detection, and critical path logic to generate sprint and deployment risk scores.
-- Integrated role-based access, release checklists, SVN commit-log tracking, Ant build status parsing, audit logs, CI tests, and Docker Compose deployment for end-to-end product engineering workflows.
