@@ -154,7 +154,7 @@ cd legacy-build-module && ant clean test
 
 ## Screenshots
 
-See `docs/screenshots.md` for screenshot placeholders.
+<img width="2880" height="1630" alt="image" src="https://github.com/user-attachments/assets/e23bf969-c986-4c0b-a58b-7e4eec87ba8d" />
 
 ## Production-Grade Highlights
 
