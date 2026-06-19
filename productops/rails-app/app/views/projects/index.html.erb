@@ -1,0 +1,12 @@
+<header class="page-header">
+  <h1>Projects</h1>
+  <% if current_user.admin? %><%= link_to "New Project", new_project_path, class: "button" %><% end %>
+</header>
+<div class="card-list">
+  <% @projects.each do |project| %>
+    <%= link_to project_path(project), class: "card" do %>
+      <strong><%= project.name %></strong>
+      <span><%= project.description %></span>
+    <% end %>
+  <% end %>
+</div>

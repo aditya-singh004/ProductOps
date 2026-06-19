@@ -1,0 +1,15 @@
+<header class="page-header"><h1>Ant Build Runs</h1></header>
+<%= form_with url: build_runs_path, multipart: true, local: true, class: "stacked-form import-form" do |form| %>
+  <%= form.collection_select :project_id, @projects, :id, :name %>
+  <%= form.file_field :build_log, accept: ".log,text/plain" %>
+  <%= form.text_area :log_output, placeholder: "Or paste Ant build log output" %>
+  <%= form.submit "Import Build Log" %>
+<% end %>
+<table>
+  <thead><tr><th>Project</th><th>Status</th><th>Duration</th><th>Failed Tests</th><th>Executed</th></tr></thead>
+  <tbody>
+    <% @build_runs.each do |build| %>
+      <tr><td><%= build.project.name %></td><td><%= badge(build.status) %></td><td><%= build.duration_seconds %>s</td><td><%= build.failed_test_count %></td><td><%= build.executed_at.to_fs(:short) %></td></tr>
+    <% end %>
+  </tbody>
+</table>

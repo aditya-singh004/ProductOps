@@ -1,0 +1,10 @@
+<header class="page-header"><h1><%= @project.name %> Sprints</h1></header>
+<div class="card-list">
+  <% @sprints.each do |sprint| %>
+    <%= link_to project_sprint_path(@project, sprint), class: "card" do %>
+      <strong><%= sprint.name %></strong>
+      <span><%= sprint.goal %></span>
+      <%= badge(sprint.status) %>
+    <% end %>
+  <% end %>
+</div>

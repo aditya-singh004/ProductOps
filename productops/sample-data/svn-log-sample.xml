@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<log>
+  <logentry revision="1840">
+    <author>dmehta</author>
+    <date>2026-06-15T09:31:22.000000Z</date>
+    <paths>
+      <path action="A" kind="file">/trunk/db/refunds.sql</path>
+      <path action="M" kind="file">/trunk/app/models/refund.rb</path>
+    </paths>
+    <msg>PO-101 create refund database migration</msg>
+  </logentry>
+  <logentry revision="1842">
+    <author>dmehta</author>
+    <date>2026-06-16T11:18:45.000000Z</date>
+    <paths>
+      <path action="M" kind="file">/trunk/app/controllers/refunds_controller.rb</path>
+      <path action="M" kind="file">/trunk/app/services/refund_authorizer.rb</path>
+    </paths>
+    <msg>PO-102 implement refund API endpoint and validations</msg>
+  </logentry>
+  <logentry revision="1847">
+    <author>qaqiana</author>
+    <date>2026-06-17T13:04:10.000000Z</date>
+    <paths>
+      <path action="A" kind="file">/trunk/test/refund_regression_test.rb</path>
+    </paths>
+    <msg>PO-105 add QA regression cases for failed transactions</msg>
+  </logentry>
+</log>

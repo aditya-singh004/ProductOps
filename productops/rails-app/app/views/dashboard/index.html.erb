@@ -1,0 +1,47 @@
+<header class="page-header">
+  <h1>Delivery Intelligence Dashboard</h1>
+  <p>Requirements, sprint execution, release risk, SVN commits, and Ant build health in one operational view.</p>
+</header>
+
+<section class="metric-grid">
+  <div class="metric"><strong><%= Project.active.count %></strong><span>Projects</span></div>
+  <div class="metric"><strong><%= Requirement.active.count %></strong><span>Requirements</span></div>
+  <div class="metric"><strong><%= WbsItem.active.where(status: "blocked").count %></strong><span>Blocked Tasks</span></div>
+  <div class="metric"><strong><%= @latest_build&.status&.titleize || "None" %></strong><span>Latest Ant Build</span></div>
+</section>
+
+<section class="two-column">
+  <div>
+    <h2>Projects</h2>
+    <div class="card-list">
+      <% @projects.each do |project| %>
+        <%= link_to project_path(project), class: "card" do %>
+          <strong><%= project.name %></strong>
+          <span><%= project.key %> / <%= pluralize(project.requirements.size, "requirement") %> / <%= pluralize(project.releases.size, "release") %></span>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+  <div>
+    <h2>Recent Risk Reports</h2>
+    <table>
+      <thead><tr><th>Project</th><th>Score</th><th>Level</th></tr></thead>
+      <tbody>
+        <% @risk_reports.each do |report| %>
+          <tr><td><%= report.project.name %></td><td><%= report.risk_score %></td><td><%= badge(report.risk_level) %></td></tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2>Activity Timeline</h2>
+  <table>
+    <tbody>
+      <% @recent_activity.each do |log| %>
+        <tr><td><%= log.created_at.to_fs(:short) %></td><td><%= log.user&.name || "System" %></td><td><%= log.action %></td><td><%= log.project&.name %></td></tr>
+      <% end %>
+    </tbody>
+  </table>
+</section>

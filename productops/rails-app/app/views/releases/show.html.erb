@@ -1,0 +1,38 @@
+<header class="page-header">
+  <div>
+    <h1>Release <%= @release.version_number %></h1>
+    <p><%= @release.title %></p>
+  </div>
+  <button class="button" id="approve-production" data-url="<%= api_release_approve_production_path(@release) %>">Approve Production</button>
+</header>
+
+<section class="two-column">
+  <div>
+    <h2>Checklist</h2>
+    <div class="checklist" data-url="<%= api_release_checklist_path(@release) %>">
+      <% (ReleaseChecklist::STAGING_FIELDS + ReleaseChecklist::PRODUCTION_FIELDS).each do |field| %>
+        <label>
+          <input type="checkbox" class="checklist-toggle" data-field="<%= field %>" <%= "checked" if @release.release_checklist.public_send(field) %>>
+          <%= field.to_s.humanize %>
+        </label>
+      <% end %>
+    </div>
+    <h2>Readiness</h2>
+    <% (@readiness.staging_errors + @readiness.production_errors).each do |error| %><div class="warning"><%= error %></div><% end %>
+  </div>
+  <div>
+    <h2>Risk Report</h2>
+    <% if (report = @release.latest_risk_report) %>
+      <div class="risk-card <%= report.risk_level.downcase %>">
+        <strong><%= report.risk_score %> / <%= report.risk_level %></strong>
+        <ul><% report.reasons.each do |reason| %><li><%= reason %></li><% end %></ul>
+      </div>
+    <% else %>
+      <p>No risk report has been calculated yet.</p>
+    <% end %>
+    <h2>Deployment Timeline</h2>
+    <% @release.deployments.order(created_at: :desc).each do |deployment| %>
+      <div class="card"><strong><%= deployment.environment.titleize %></strong> <%= badge(deployment.status) %><p><%= deployment.logs %></p></div>
+    <% end %>
+  </div>
+</section>

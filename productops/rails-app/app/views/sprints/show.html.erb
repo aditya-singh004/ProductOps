@@ -1,0 +1,47 @@
+<header class="page-header">
+  <div>
+    <h1><%= @sprint.name %></h1>
+    <p><%= @sprint.goal %></p>
+  </div>
+  <button class="button" id="calculate-risk" data-url="<%= api_sprint_calculate_risk_path(@sprint) %>">Calculate Risk</button>
+</header>
+
+<section class="metric-grid">
+  <div class="metric"><strong><%= @summary[:total_tasks] %></strong><span>Total Tasks</span></div>
+  <div class="metric"><strong><%= @summary[:completed_tasks] %></strong><span>Done</span></div>
+  <div class="metric"><strong><%= @summary[:blocked_tasks] %></strong><span>Blocked</span></div>
+  <div class="metric"><strong><%= @summary[:completion_percentage] %>%</strong><span>Complete</span><%= percent_bar(@summary[:completion_percentage]) %></div>
+</section>
+
+<section class="kanban" data-board-url="<%= api_sprint_board_path(@sprint) %>">
+  <% WbsItem::STATUSES.each do |status| %>
+    <div class="kanban-column" data-status="<%= status %>">
+      <h2><%= status.titleize %></h2>
+      <% @tasks.select { |task| task.status == status }.each do |task| %>
+        <article class="task-card" data-task-id="<%= task.id %>">
+          <strong><%= task.task_key %> <%= task.title %></strong>
+          <span><%= task.owner&.name || "Unassigned" %></span>
+          <div><%= badge(task.requirement.priority) %> <%= badge(task.risk_level) %></div>
+          <select class="task-status" data-url="<%= api_wbs_item_status_path(task) %>">
+            <% WbsItem::STATUSES.each do |s| %><option value="<%= s %>" <%= "selected" if s == task.status %>><%= s.titleize %></option><% end %>
+          </select>
+        </article>
+      <% end %>
+    </div>
+  <% end %>
+</section>
+
+<section class="three-column">
+  <div>
+    <h2>Execution Order</h2>
+    <ol><% @execution_order.each do |task| %><li><%= task.task_key %> <%= task.title %></li><% end %></ol>
+  </div>
+  <div>
+    <h2>Critical Path</h2>
+    <ol><% @critical_path.each do |task| %><li><%= task.task_key %> <%= task.title %> (<%= task.estimated_hours %>h)</li><% end %></ol>
+  </div>
+  <div>
+    <h2>Dependency Warnings</h2>
+    <% @at_risk_tasks.each do |task| %><div class="warning"><%= task.task_key %> is downstream from a blocked task.</div><% end %>
+  </div>
+</section>

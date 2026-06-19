@@ -1,0 +1,9 @@
+compile:
+    [javac] Compiling 8 source files to build/classes
+
+test:
+    [java] RefundWorkflowTest FAILED: expected rollback note
+    [java] ReleaseChecklistTest FAILED: missing QA verification
+
+BUILD FAILED
+Total time: 17 seconds

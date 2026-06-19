@@ -1,0 +1,10 @@
+<%= form_with model: requirement, url: requirement.persisted? ? requirement_path(requirement) : project_requirements_path(project), local: true, class: "stacked-form" do |form| %>
+  <% if requirement.errors.any? %><div class="flash alert"><%= requirement.errors.full_messages.to_sentence %></div><% end %>
+  <%= form.text_field :title, placeholder: "Requirement title", required: true %>
+  <%= form.text_area :description, placeholder: "Technical description" %>
+  <%= form.text_area :business_value, placeholder: "Business value" %>
+  <%= form.select :priority, Requirement::PRIORITIES.map { |s| [s.titleize, s] } %>
+  <%= form.select :status, Requirement::STATUSES.map { |s| [s.titleize, s] } %>
+  <%= form.collection_select :assigned_owner_id, User.order(:name), :id, :name, include_blank: "Unassigned" %>
+  <%= form.submit %>
+<% end %>

@@ -1,0 +1,9 @@
+<section class="auth-panel">
+  <h1>ProductOps</h1>
+  <p>Engineering delivery and release intelligence</p>
+  <%= form_with url: login_path, local: true do |form| %>
+    <%= form.email_field :email, placeholder: "Email", value: "admin@productops.dev", required: true %>
+    <%= form.password_field :password, placeholder: "Password", value: "password123", required: true %>
+    <%= form.submit "Sign in" %>
+  <% end %>
+</section>

@@ -1,0 +1,44 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-productops}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-productops_password}
+      POSTGRES_DB: ${POSTGRES_DB:-productops_development}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-productops}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  risk-engine-service:
+    build:
+      context: ./risk-engine-service
+    ports:
+      - "8080:8080"
+
+  rails-app:
+    build:
+      context: ./rails-app
+    command: bash -lc "rm -f tmp/pids/server.pid && bundle exec rails server -b 0.0.0.0"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-productops}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-productops_password}
+      POSTGRES_DB: ${POSTGRES_DB:-productops_development}
+      DATABASE_URL: postgres://${POSTGRES_USER:-productops}:${POSTGRES_PASSWORD:-productops_password}@postgres:5432/${POSTGRES_DB:-productops_development}
+      RISK_ENGINE_URL: http://risk-engine-service:8080
+      RAILS_ENV: development
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      risk-engine-service:
+        condition: service_started
+
+volumes:
+  postgres-data:

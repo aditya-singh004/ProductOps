@@ -1,0 +1,14 @@
+<header class="page-header"><h1><%= @project.name %> Requirements</h1></header>
+<%= form_with url: project_requirements_path(@project), method: :get, local: true, class: "filter-bar" do |form| %>
+  <%= form.select :status, options_for_select([["All statuses", ""]] + Requirement::STATUSES.map { |s| [s.titleize, s] }, params[:status]) %>
+  <%= form.select :priority, options_for_select([["All priorities", ""]] + Requirement::PRIORITIES.map { |s| [s.titleize, s] }, params[:priority]) %>
+  <%= form.submit "Filter" %>
+<% end %>
+<table>
+  <thead><tr><th>Title</th><th>Priority</th><th>Status</th><th>Owner</th></tr></thead>
+  <tbody>
+    <% @requirements.each do |requirement| %>
+      <tr><td><%= link_to requirement.title, requirement %></td><td><%= badge(requirement.priority) %></td><td><%= badge(requirement.status) %></td><td><%= requirement.assigned_owner&.name %></td></tr>
+    <% end %>
+  </tbody>
+</table>

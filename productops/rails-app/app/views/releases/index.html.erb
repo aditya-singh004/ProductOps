@@ -1,0 +1,15 @@
+<header class="page-header"><h1><%= @project.name %> Releases</h1></header>
+<table>
+  <thead><tr><th>Version</th><th>Title</th><th>Environment</th><th>Status</th><th>Risk</th></tr></thead>
+  <tbody>
+    <% @releases.each do |release| %>
+      <tr>
+        <td><%= link_to release.version_number, project_release_path(@project, release) %></td>
+        <td><%= release.title %></td>
+        <td><%= badge(release.environment) %></td>
+        <td><%= badge(release.status) %></td>
+        <td><%= release.latest_risk_report ? badge(release.latest_risk_report.risk_level) : "Not calculated" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

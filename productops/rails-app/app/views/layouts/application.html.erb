@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ProductOps</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+  </head>
+  <body>
+    <nav class="topbar">
+      <%= link_to "ProductOps", root_path, class: "brand" %>
+      <% if current_user %>
+        <%= link_to "Projects", projects_path %>
+        <%= link_to "Builds", build_runs_path %>
+        <%= link_to "SVN Import", new_svn_import_path %>
+        <% if current_user.admin? %><%= link_to "Audit Logs", audit_logs_path %><% end %>
+        <span class="session"><%= current_user.name %> / <%= current_user.role.titleize %></span>
+        <%= button_to "Logout", logout_path, method: :delete, class: "link-button" %>
+      <% end %>
+    </nav>
+    <main class="container">
+      <% flash.each do |type, message| %>
+        <div class="flash <%= type %>"><%= message %></div>
+      <% end %>
+      <%= yield %>
+    </main>
+    <div id="toast" class="toast"></div>
+  </body>
+</html>

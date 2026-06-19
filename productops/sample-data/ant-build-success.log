@@ -1,0 +1,9 @@
+compile:
+    [javac] Compiling 8 source files to build/classes
+
+test:
+    [java] RefundWorkflowTest passed
+    [java] SettlementReconciliationTest passed
+
+BUILD SUCCESSFUL
+Total time: 21 seconds

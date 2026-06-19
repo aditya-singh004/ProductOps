@@ -1,0 +1,12 @@
+<h1>New Release</h1>
+<%= form_with model: [@project, @release], local: true, class: "stacked-form" do |form| %>
+  <% if @release.errors.any? %><div class="flash alert"><%= @release.errors.full_messages.to_sentence %></div><% end %>
+  <%= form.collection_select :sprint_id, @project.sprints.order(:start_date), :id, :name, include_blank: "No sprint" %>
+  <%= form.text_field :version_number, placeholder: "Version number", required: true %>
+  <%= form.text_field :title, placeholder: "Release title", required: true %>
+  <%= form.date_field :target_date %>
+  <%= form.select :environment, Release::ENVIRONMENTS.map { |value| [value.titleize, value] } %>
+  <%= form.select :status, Release::STATUSES.map { |value| [value.titleize, value] } %>
+  <%= form.collection_select :release_owner_id, User.order(:name), :id, :name %>
+  <%= form.submit "Create Release" %>
+<% end %>

@@ -1,0 +1,6 @@
+<header class="page-header"><h1>SVN XML Import</h1></header>
+<%= form_with url: svn_imports_path, multipart: true, local: true, class: "stacked-form" do |form| %>
+  <%= form.collection_select :project_id, @projects, :id, :name %>
+  <%= form.file_field :svn_log, accept: ".xml,text/xml", required: true %>
+  <%= form.submit "Import SVN Log" %>
+<% end %>

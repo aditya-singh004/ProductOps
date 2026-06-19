@@ -1,0 +1,27 @@
+<project name="productops-legacy-build-module" default="test" basedir=".">
+  <property name="src.dir" value="src/main/java"/>
+  <property name="test.dir" value="test"/>
+  <property name="build.dir" value="build"/>
+  <property name="classes.dir" value="${build.dir}/classes"/>
+  <property name="test.classes.dir" value="${build.dir}/test-classes"/>
+
+  <target name="clean">
+    <delete dir="${build.dir}"/>
+  </target>
+
+  <target name="compile">
+    <mkdir dir="${classes.dir}"/>
+    <javac srcdir="${src.dir}" destdir="${classes.dir}" includeantruntime="false" source="17" target="17"/>
+  </target>
+
+  <target name="test" depends="compile">
+    <mkdir dir="${test.classes.dir}"/>
+    <javac srcdir="${test.dir}" destdir="${test.classes.dir}" classpath="${classes.dir}" includeantruntime="false" source="17" target="17"/>
+    <java classname="com.productops.legacy.LegacyBuildLogParserTest" fork="true" failonerror="true">
+      <classpath>
+        <pathelement path="${classes.dir}"/>
+        <pathelement path="${test.classes.dir}"/>
+      </classpath>
+    </java>
+  </target>
+</project>

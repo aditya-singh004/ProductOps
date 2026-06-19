@@ -1,0 +1,53 @@
+<header class="page-header">
+  <div>
+    <h1><%= @project.name %></h1>
+    <p><%= @project.description %></p>
+  </div>
+  <%= link_to "New Requirement", new_project_requirement_path(@project), class: "button" %>
+</header>
+
+<section class="metric-grid">
+  <div class="metric"><strong><%= @requirements.count %></strong><span>Requirements</span></div>
+  <div class="metric"><strong><%= @sprints.count %></strong><span>Sprints</span></div>
+  <div class="metric"><strong><%= @releases.count %></strong><span>Releases</span></div>
+  <div class="metric"><strong><%= @builds.first&.status&.titleize || "No builds" %></strong><span>Latest Build</span></div>
+</section>
+
+<section class="two-column">
+  <div>
+    <h2>Requirements</h2>
+    <table>
+      <thead><tr><th>Title</th><th>Priority</th><th>Status</th><th>Owner</th></tr></thead>
+      <tbody>
+        <% @requirements.each do |requirement| %>
+          <tr>
+            <td><%= link_to requirement.title, requirement_path(requirement) %></td>
+            <td><%= badge(requirement.priority) %></td>
+            <td><%= badge(requirement.status) %></td>
+            <td><%= requirement.assigned_owner&.name %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <div>
+    <div class="section-head"><h2>Sprints & Releases</h2><%= link_to "New Release", new_project_release_path(@project), class: "button secondary" %></div>
+    <% @sprints.each do |sprint| %>
+      <%= link_to "#{sprint.name} - #{sprint.status.titleize}", project_sprint_path(@project, sprint), class: "row-link" %>
+    <% end %>
+    <% @releases.each do |release| %>
+      <%= link_to "Release #{release.version_number}: #{release.status.titleize}", project_release_path(@project, release), class: "row-link" %>
+    <% end %>
+  </div>
+</section>
+
+<section class="two-column">
+  <div>
+    <h2>Recent SVN Commits</h2>
+    <table><tbody><% @commits.each do |commit| %><tr><td>r<%= commit.revision %></td><td><%= commit.task_key %></td><td><%= truncate(commit.message, length: 80) %></td></tr><% end %></tbody></table>
+  </div>
+  <div>
+    <h2>Ant Build History</h2>
+    <table><tbody><% @builds.each do |build| %><tr><td><%= badge(build.status) %></td><td><%= build.duration_seconds %>s</td><td><%= build.executed_at.to_fs(:short) %></td></tr><% end %></tbody></table>
+  </div>
+</section>

@@ -1,0 +1,55 @@
+<header class="page-header">
+  <div>
+    <h1><%= @requirement.title %></h1>
+    <p><%= @requirement.description %></p>
+  </div>
+  <%= link_to "Edit", edit_requirement_path(@requirement), class: "button secondary" %>
+</header>
+
+<section class="metric-grid">
+  <div class="metric"><strong><%= @summary[:total_estimate] %>h</strong><span>Estimate</span></div>
+  <div class="metric"><strong><%= @summary[:total_actual] %>h</strong><span>Actual</span></div>
+  <div class="metric"><strong><%= @summary[:variance_percentage] %>%</strong><span>Variance</span></div>
+  <div class="metric"><strong><%= @summary[:completion_percentage] %>%</strong><span>Complete</span><%= percent_bar(@summary[:completion_percentage]) %></div>
+</section>
+
+<section class="two-column">
+  <div>
+    <div class="section-head"><h2>WBS Items</h2><button class="button modal-open" data-target="#wbs-modal">Add WBS</button></div>
+    <table>
+      <thead><tr><th>Key</th><th>Task</th><th>Status</th><th>Owner</th><th>Actual</th></tr></thead>
+      <tbody>
+        <% @requirement.wbs_items.each do |item| %>
+          <tr data-task-row="<%= item.id %>">
+            <td><%= item.task_key %></td>
+            <td><%= item.title %></td>
+            <td><%= badge(item.status) %></td>
+            <td><%= item.owner&.name %></td>
+            <td><input class="actual-hours" data-url="<%= api_wbs_item_actual_hours_path(item) %>" value="<%= item.actual_hours.to_f %>"></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <div>
+    <div class="section-head"><h2>Requirement Gaps</h2><button class="button modal-open" data-target="#gap-modal">Add Gap</button></div>
+    <% @requirement.requirement_gaps.each do |gap| %>
+      <div class="card"><strong><%= gap.title %></strong><p><%= gap.description %></p><%= badge(gap.status) %></div>
+    <% end %>
+    <div class="section-head"><h2>Clarifications</h2><button class="button modal-open" data-target="#question-modal">Ask</button></div>
+    <% @requirement.clarification_questions.each do |question| %>
+      <div class="card"><strong><%= question.question %></strong><p><%= question.answer.presence || "Awaiting answer" %></p><%= badge(question.status) %></div>
+    <% end %>
+  </div>
+</section>
+
+<section>
+  <h2>Decision Notes</h2>
+  <% @requirement.decision_notes.each do |note| %>
+    <div class="card"><strong><%= note.title %></strong><p><%= note.decision %></p><small><%= note.rationale %></small></div>
+  <% end %>
+</section>
+
+<div id="gap-modal" class="modal"><div class="modal-body"><button class="modal-close">x</button><h2>Add Gap</h2><%= form_with model: [@requirement, @gap], local: true, class: "stacked-form" do |f| %><%= f.text_field :title, placeholder: "Gap title" %><%= f.text_area :description, placeholder: "Missing detail" %><%= f.select :severity, RequirementGap::SEVERITIES.map { |s| [s.titleize, s] } %><%= f.collection_select :assigned_to_id, User.order(:name), :id, :name, include_blank: "Unassigned" %><%= f.submit "Save Gap" %><% end %></div></div>
+<div id="question-modal" class="modal"><div class="modal-body"><button class="modal-close">x</button><h2>Ask Clarification</h2><%= form_with model: [@requirement, @question], local: true, class: "stacked-form" do |f| %><%= f.text_area :question, placeholder: "Question" %><%= f.submit "Save Question" %><% end %></div></div>
+<div id="wbs-modal" class="modal"><div class="modal-body"><button class="modal-close">x</button><h2>Add WBS Item</h2><%= form_with model: [@requirement, @wbs_item], local: true, class: "stacked-form" do |f| %><%= f.text_field :title, placeholder: "Task title" %><%= f.text_area :description, placeholder: "Task detail" %><%= f.collection_select :sprint_id, @requirement.project.sprints, :id, :name, include_blank: "Backlog" %><%= f.collection_select :owner_id, User.order(:name), :id, :name, include_blank: "Unassigned" %><%= f.select :category, WbsItem::CATEGORIES.map { |s| [s.titleize, s] } %><%= f.number_field :estimated_hours, step: 0.5, placeholder: "Estimate" %><%= f.select :complexity, WbsItem::LEVELS.map { |s| [s.titleize, s] } %><%= f.select :risk_level, WbsItem::LEVELS.map { |s| [s.titleize, s] } %><%= f.submit "Save Task" %><% end %></div></div>
